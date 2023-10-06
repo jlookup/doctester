@@ -1,7 +1,8 @@
 
 import pathlib
-import os
 import doctest
+import importlib
+import sys
 
 
 def get_files_in(dir:str|pathlib.Path) -> list[pathlib.Path]:
@@ -9,7 +10,7 @@ def get_files_in(dir:str|pathlib.Path) -> list[pathlib.Path]:
     d = pathlib.Path(dir)
 
     # TODO: raise exception
-    if not d.exists() or not d.is_dir():
+    if not d.exists(): #or not d.is_dir():
         return None
 
     contents:list[pathlib.Path] = [e for e in d.iterdir()]
@@ -32,11 +33,37 @@ def get_python_files_in(dir) -> list[pathlib.Path]:
     return py_files 
 
 
+def import_module_from_path(path:[str|pathlib.Path], alias:str=None) -> bool:
+    """Imports a python module from the file path.
+    
+    Args:
+        path (str|Path): The path to the python file to be imported.
+        alias (str): Optional name to import under.
+    """
+    # make sure cwd is in PATH
+    wd = pathlib.Path.cwd()
+    sys.path.append(str(wd))
+
+    # get file path relative to cwd
+    dir = pathlib.Path(wd / path)
+    mod_name = dir.relative_to(wd)
+
+    # format module name for importlib
+    mod_name_list = list(mod_name.parts)
+    mod_name_list[-1] = dir.stem
+    mod_name_fmt = '.'.join(mod_name_list)
+    
+    mod = importlib.import_module(mod_name_fmt)
+    return mod
+
+
 def run_doctests_in(dir) -> None:
     """Executes doctest on all .py files in the directory."""
     py_files = get_python_files_in(dir)
     for file in py_files:
-        doctest.testfile(str(file), module_relative=False)
+        print(f"Running doctests in {file.stem}")
+        mod = import_module_from_path(file)
+        doctest.testmod(mod)
 
 
 def is_rjust(array:list) -> bool:
@@ -77,16 +104,5 @@ def is_rjust(array:list) -> bool:
     return is_rjustified
 
 if __name__ == '__main__':
-    d = '0.0'
-    wd = pathlib.Path.cwd()
-    print(wd)
-    dir = pathlib.Path(wd / d)
-    print(dir)
-
-    py_files = get_python_files_in(dir)
-    print(py_files)
-
-    for file in py_files:
-        print(str(file.relative_to(dir)))
-
-    run_doctests_in(dir)
+    d = '0_0'
+    run_doctests_in(d)
