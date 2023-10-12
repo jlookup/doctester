@@ -3,6 +3,7 @@
 import doctest
 from pathlib import Path
 
+import doctester
 import file_utils
 
 __all__ = ['run_doctests_in']
@@ -24,7 +25,7 @@ if __name__ == '__main__':
     @click.option('--dir', '-d',
                   prompt='The directory where you want doctests executed',
                   help='Path to the directory to execute')  
-    @click.version_option(version="0.0.1")     
+    @click.version_option(version=doctester.__version__)     
     def main(dir):
         """Executes doctests in all modules within `dir`."""
         d = Path(Path.cwd() / dir)
