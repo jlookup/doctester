@@ -1,3 +1,4 @@
+#!.venv/bin/python
 
 from pathlib import Path
 import doctest
@@ -74,6 +75,7 @@ __all__ = ['run_doctests_in']
 
 if __name__ == '__main__':
     import click
+
     @click.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--dir', '-d',
                   prompt='The directory where you want doctests executed',
