@@ -3,10 +3,10 @@
 import doctest
 from pathlib import Path
 
-import doctester
-import file_utils
+import click
 
-__all__ = ['run_doctests_in']
+import doctester
+from doctester import file_utils
 
 
 def run_doctests_in(dir) -> None:
@@ -18,9 +18,6 @@ def run_doctests_in(dir) -> None:
         doctest.testmod(mod)
 
 
-if __name__ == '__main__':
-    import click
-
     @click.command(context_settings=dict(ignore_unknown_options=True))
     @click.option('--dir', '-d',
                   prompt='The directory where you want doctests executed',
@@ -31,4 +28,6 @@ if __name__ == '__main__':
         d = Path(Path.cwd() / dir)
         run_doctests_in(d)    
 
-    main()  
+
+# if __name__ == '__main__':
+#     main()
