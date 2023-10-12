@@ -4,8 +4,13 @@ import doctest
 import importlib
 import sys
 
+
 def get_files_in(dir:str|Path) -> list[Path]:
-    """Returns all files within the directory or subdirectories."""
+    """Returns all files within the directory or subdirectories.
+
+    Raises:
+        RecursionError: if your directory is `highly` nested.
+    """
     d = Path(dir)
 
     # TODO: raise exception
